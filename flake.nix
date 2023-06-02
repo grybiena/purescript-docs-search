@@ -4,11 +4,11 @@
 
       npmlock2nix =
         { flake = false;
-          url = "github:nix-community/npmlock2nix";
+          url = "github:grybiena/npmlock2nix?ref=grybiena";
         };
 
       ps-tools.follows = "purs-nix/ps-tools";
-      purs-nix.url = "github:purs-nix/purs-nix/ps-0.15";
+      purs-nix.url = "github:grybiena/purs-nix?ref=grybiena";
       utils.url = "github:ursi/flake-utils/8";
     };
 
@@ -16,7 +16,7 @@
     with builtins;
     utils.apply-systems
       { inherit inputs;
-        systems = [ "x86_64-linux" "x86_64-darwin" ];
+        systems = [ "aarch64-linux" "aarch64-darwin" "x86_64-linux" "x86_64-darwin" ];
       }
       ({ make-shell, pkgs, ps-tools, system, ... }:
          let
@@ -28,7 +28,7 @@
 
            l = p.lib; p = pkgs;
            npmlock2nix = import inputs.npmlock2nix { inherit pkgs; };
-           our-node = p.nodejs-14_x;
+           our-node = p.nodejs-18_x;
            ps = import ./purs.nix { inherit npmlock2nix our-node p; } purs-nix;
            pname = "purescript-docs-search";
          in
@@ -113,9 +113,9 @@
                    with p;
                    [ esbuild
                      our-node
-                     ps-tools.for-0_14.purescript
-                     ps-tools.for-0_14.zephyr
-                     ps-tools.for-0_14.purescript-language-server
+                     ps-tools.for-0_15.purescript
+                     # ps-tools.for-0_15.zephyr
+                     ps-tools.for-0_15.purescript-language-server
                      spago
 
                      (ps.command
